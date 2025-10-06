@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: conv-mp-payment-calculation
+  datasource:
+    url: jdbc:postgresql://localhost:5432/conv_monitoring
+    username: postgres
+    password: postgres
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true        # SQL
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  jackson:
+    deserialization:
+      FAIL_ON_UNKNOWN_PROPERTIES: false  # JSON
+
+  sql:
+    init:
+      mode: never              # schema.sql + data.sql
+
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.hibernate.orm.jdbc.bind: TRACE    # Hibernate 6+
+    ru.bank.conv.mppaymentcalculation: DEBUG
+
+server:
+  port: 8080
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
