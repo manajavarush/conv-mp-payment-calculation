@@ -13,7 +13,7 @@ spring:
     properties:
       hibernate:
         format_sql: true        # SQL
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+#        dialect: org.hibernate.dialect.PostgreSQLDialect -> HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
 
   jackson:
     deserialization:
@@ -39,3 +39,8 @@ springdoc:
     path: /swagger-ui.html
     operations-sorter: method
     tags-sorter: alpha
+
+gateway:
+  integration-id: 2
+  source: conv-mp-payment-calculation
+  url: http://localhost:8080/v1/conv-uis-gateway
