@@ -1,6 +1,7 @@
 package ru.bank.conv.mp_payment_calculation.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
 import ru.bank.conv.mp_payment_calculation.client.ConvUisGatewayClient;
@@ -17,33 +18,33 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PaymentMonitoringService {
 
-    private final ClientRepository repository;
-    private final ConvUisGatewayClient client;
+    private final ClientRepository clientRepository;
+    private final ConvUisGatewayClient gatewayClient;
 
     private final GatewayProperties properties;
 
-    public GatewayResponse updatePayments() {
-
+    public GatewayResponse syncActiveClientsPayments() {
         // Получить коллекцию id активных клиентов (isDeleted = false) из БД
-        var activeClientIds = repository.findActiveClientIdsForUpdate();
+        var activeClientIds = clientRepository.findActiveClientIds();
 
+        log.info("Syncing payments for {} active clients", activeClientIds.size());
         var request = buildGatewayRequest(activeClientIds);
 
         return executeGatewayRequest(request);
-
     }
 
-    public GatewayResponse addClients(List<Long> ids) {
-
+    public GatewayResponse registerClientsForMonitoring(List<Long> requestedClientIds) {
         // Валидация формата входных данных (параметров запроса: null, пустой список)
-        if (ids == null || ids.isEmpty()) {
+        if (requestedClientIds == null || requestedClientIds.isEmpty()) {
+            log.warn("Client IDs list cannot be null or empty");
             throw new BadRequestException();
         }
 
         // Валидация данных на предмет добавления уже существующих клиентов
-        var activeClientIds = repository.validateClientIdsFromRequest(ids);
+        var alreadyActiveIds = clientRepository.findActiveClientIdsByIdIn(requestedClientIds);
 
         // Перед формированием JSON реализуем проверки:
         // 1) Если Клиент в базе есть, возвращаем ошибку 400 "Запрашиваемый Клиент уже есть в списке"
@@ -53,19 +54,24 @@ public class PaymentMonitoringService {
         // иначе мы обращаемся во внешний сервис
 
         // Если клиент уже есть в БД
-        if (!activeClientIds.isEmpty()) {
+        if (!alreadyActiveIds.isEmpty()) {
+            log.warn("Attempt to register already active clients: {}", alreadyActiveIds);
             throw new ClientAlreadyExistException();
-        } else {
-            // Иначе передаем в request оригинальные параметры запросы (id-s)
-            var request = buildGatewayRequest(ids);
-            return executeGatewayRequest(request);
         }
+            // По идее здесь нужно "воскрешать" старые записи, если она уже есть в БД, но удалена isDeleted = true
+            // ответ аналитика - не важно, соответственно забиваем болт на восстановление записей
+
+            // Иначе передаем в request оригинальные параметры запросы (id-s)
+
+        log.info("Registering {} new clients", requestedClientIds.size());
+            var request = buildGatewayRequest(requestedClientIds);
+            return executeGatewayRequest(request);
     }
 
     private GatewayResponse executeGatewayRequest(GatewayRequest request) {
         // Делаем REST-вызов в мок conv-uis-gateway и возвращаем тело ответа
         try {
-            var response = client.sendRequest(request);
+            var response = gatewayClient.sendRequest(request);
             return response.getBody();
         } catch (HttpServerErrorException exception) {
             throw new UisUnavailableException();

@@ -19,19 +19,20 @@ import java.time.LocalDateTime;
 @Builder
 public class Client {
 
-    @Id // Проблема(?) по ТЗ: id без авто-инкремента
+    @Id // id без авто-инкремента -> получаем из внешней системы
     @EqualsAndHashCode.Include // Только ID определяет равенство
     private Long id;
 
-    @Column(name = "inn")
-    private Long inn; // !!! Проблема по ТЗ: ИНН как Long (потеря ведущих нулей, может начинаться с "0") !!!
+    @Column(name = "inn", length = 12)
+    private String inn;
 
     @Column(name = "name", nullable = false) // length = 255 по умолчанию, указание избыточно
     private String name;
 
+    // Настройка columnDefinition для PostgresSQL -> устанавливает значение по умолчанию FALSE при вставке новой записи
     @Column(name = "is_deleted", nullable = false, columnDefinition = "boolean default false")
-    @Builder.Default
-    private Boolean isDeleted = false; // мягкое удаление
+    @Builder.Default // устанавливает значение по умолчанию при использовании builder.build(), иначе был бы "null"
+    private boolean isDeleted = false; // мягкое удаление
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

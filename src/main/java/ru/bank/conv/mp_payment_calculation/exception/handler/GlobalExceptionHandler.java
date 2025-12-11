@@ -1,6 +1,5 @@
 package ru.bank.conv.mp_payment_calculation.exception.handler;
 
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,22 +14,15 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UisUnavailableException.class)
     public ResponseEntity<GatewayResponse> handleUisUnavailable(UisUnavailableException exception) {
-        return ResponseEntity.
-                status(HttpStatus.INTERNAL_SERVER_ERROR)
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new GatewayResponse(exception.getMessage()));
     }
 
-    @ExceptionHandler(ClientAlreadyExistException.class)
-    public ResponseEntity<GatewayResponse> handleClientAlreadyExist(ClientAlreadyExistException exception) {
-        return ResponseEntity.
-                status(HttpStatus.BAD_REQUEST)
-                .body(new GatewayResponse(exception.getMessage()));
-    }
-
-    @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<GatewayResponse> handleBadRequest(BadRequestException exception) {
-        return ResponseEntity.
-                status(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler({ClientAlreadyExistException.class, BadRequestException.class})
+    public ResponseEntity<GatewayResponse> handleClientException(RuntimeException exception) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
                 .body(new GatewayResponse(exception.getMessage()));
     }
 }

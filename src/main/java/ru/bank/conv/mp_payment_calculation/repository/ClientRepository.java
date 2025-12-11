@@ -10,17 +10,17 @@ import java.util.List;
 
 public interface ClientRepository extends JpaRepository<Client, Long> {
 
-    String FIND_ACTIVE_CLIENT_IDS_FOR_UPDATE =
+    String FIND_ACTIVE_CLIENT_IDS =
             "SELECT c.id FROM Client c WHERE c.isDeleted = false";
 
-    String VALIDATE_CLIENT_IDS_FROM_REQUEST =
+    String FIND_ACTIVE_CLIENT_IDS_BY_ID_IN =
             "SELECT c.id FROM Client c WHERE c.isDeleted = false AND c.id IN :ids";
 
     // ФТ_1: Для эндпоинта обновления платежей
-    @Query(FIND_ACTIVE_CLIENT_IDS_FOR_UPDATE)
-    List<Long> findActiveClientIdsForUpdate();
+    @Query(FIND_ACTIVE_CLIENT_IDS)
+    List<Long> findActiveClientIds();
 
-    // ФТ_2: Для валидации клиентов из запроса на добавление
-    @Query(VALIDATE_CLIENT_IDS_FROM_REQUEST)
-    List<Long> validateClientIdsFromRequest(@Param("ids") Collection<Long> clientIdsFromRequest);
+    // ФТ_2: Этот запрос вернет ID клиентов, которые уже есть и активны
+    @Query(FIND_ACTIVE_CLIENT_IDS_BY_ID_IN)
+    List<Long> findActiveClientIdsByIdIn(@Param("ids") Collection<Long> clientIdsFromRequest);
 }

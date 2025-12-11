@@ -17,5 +17,4 @@ public enum Message {
     Message(String text) {
         this.text = text;
     }
-
 }
