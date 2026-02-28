@@ -13,7 +13,7 @@ spring:
     properties:
       hibernate:
         format_sql: true        # SQL
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false # Отключаем OSIV (Open Session in View)
 
   jackson:
     deserialization:
@@ -29,7 +29,7 @@ logging:
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
     org.hibernate.orm.jdbc.bind: TRACE    # Hibernate 6+
-    ru.bank.conv.mppaymentcalculation: DEBUG
+    ru.bank.conv.mp_payment_calculation: DEBUG
 
 server:
   port: 8080
@@ -37,5 +37,15 @@ server:
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
-    operations-sorter: method
-    tags-sorter: alpha
+    operations-sorter: method        # Сортирует эндпоинты по HTTP-методу (GET, POST)
+    tags-sorter: alpha               # Сортирует контроллеры по алфавиту
+    display-request-duration: true   # Показывает время выполнения запроса
+    filter: true                     # Поиск по API
+    default-models-expand-depth: 2   # Раскрывать модели DTO
+  api-docs:
+    path: /api-docs                  # стандартный endpoint JSON (OpenAPI spec)
+
+gateway:
+  integration-id: 2
+  source: conv-mp-payment-calculation
+  url: http://localhost:8080/v1/conv-uis-gateway

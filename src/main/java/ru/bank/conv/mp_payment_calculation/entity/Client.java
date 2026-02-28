@@ -15,23 +15,23 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true) // БЕЗОПАСНО
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Builder
 public class Client {
 
-    @Id // Проблема(?) по ТЗ: id без авто-инкремента
-    @EqualsAndHashCode.Include // Только ID определяет равенство
+    @Id
+    @EqualsAndHashCode.Include
     private Long id;
 
-    @Column(name = "inn")
-    private Long inn; // !!! Проблема по ТЗ: ИНН как Long (потеря ведущих нулей, может начинаться с "0") !!!
+    @Column(name = "inn", length = 12)
+    private String inn;
 
-    @Column(name = "name", nullable = false) // length = 255 по умолчанию, указание избыточно
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "is_deleted", nullable = false, columnDefinition = "boolean default false")
     @Builder.Default
-    private Boolean isDeleted = false; // мягкое удаление
+    private boolean deleted = false;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

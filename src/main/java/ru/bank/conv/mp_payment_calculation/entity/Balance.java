@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -12,22 +13,24 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true) // БЕЗОПАСНО
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Builder
 public class Balance {
 
-    @Id // Проблема по ТЗ: id без авто-инкремента
-    @EqualsAndHashCode.Include // Только ID определяет равенство
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "balance_seq_gen")
+    @SequenceGenerator(name = "balance_seq_gen", sequenceName = "balance_id_seq", allocationSize = 1)
+    @EqualsAndHashCode.Include
     private Long id;
 
     @Column(name = "dt", nullable = false)
-    private LocalDateTime balanceDateTime; // Дата и время получения данных
+    private LocalDateTime balanceDateTime;
 
-    @Column(name = "morning_balance")
-    private Double morningBalance;  // !!! Проблема по ТЗ: баланс является опциональным (может быть null) !!!
+    @Column(name = "morning_balance", precision = 18, scale = 2)
+    private BigDecimal morningBalance;
 
-    @Column(name = "current_balance", nullable = false)
-    private Double currentBalance;
+    @Column(name = "current_balance", nullable = false, precision = 18, scale = 2)
+    private BigDecimal currentBalance;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
