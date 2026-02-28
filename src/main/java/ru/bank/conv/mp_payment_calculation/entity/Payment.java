@@ -13,36 +13,36 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true) // БЕЗОПАСНО
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Builder
 public class Payment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "payment_seq_gen")
     @SequenceGenerator(name = "payment_seq_gen", sequenceName = "payment_id_seq", allocationSize = 1)
-    @EqualsAndHashCode.Include // Только ID определяет равенство
+    @EqualsAndHashCode.Include
     private Long id;
 
     @Column(name = "dt", nullable = false)
-    private LocalDateTime dateTime;  // Дата и время получения данных о платежах
+    private LocalDateTime dateTime;
 
     @Column(name = "amount", precision = 18, scale = 2)
     private BigDecimal amount;
 
     @Column(name = "status")
-    private Boolean isExecuted; // Статус платежа: true - исполнен / false - НЕ исполнен
+    private Boolean isExecuted;
 
     @Column(name = "direction")
-    private Boolean isIncoming; // Направление платежа: true - входящий / false - исходящий
+    private Boolean isIncoming;
 
     @Column(name = "out_bank")
-    private Boolean isExternal; // Тип платежа: true - внешний / false - внутренний
+    private Boolean isExternal;
 
     @Column(name = "corr_bank_name")
-    private String recipientBankName; // Название банка получателя платежа
+    private String recipientBankName;
 
     @Column(name = "description")
-    private String description; // Описание назначения платежа
+    private String description;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

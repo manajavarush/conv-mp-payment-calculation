@@ -14,20 +14,10 @@ public class InnNormalizer {
 
     public List<String> normalize(List<String> rawInns) {
 
-        // Optional.ofNullable(rawInns).orElseGet(List::of) -> оборачиваем List в Optional
-        // Если List == null, то получаем Optional.empty -> создаем пустой неизменяемый List
-        // Иначе возвращаем исходный список "orElseGet(List::of)" supplier НЕ выполняется
-
         return Optional.ofNullable(rawInns)
                 .orElseGet(List::of)
-
-                // превращаем список в стрим для удобства работы в функциональном стиле
                 .stream()
-
-                // преобразуем Stream<String> в Stream<Optional<String>> (содержит нормализованные и пустые Optional)
                 .map(this::normalizeSingle)
-
-                // преобразуем в Stream<String> который содержит только корректные значения. Optional.empty игнорируются
                 .flatMap(Optional::stream)
                 .distinct()
                 .toList();
@@ -40,7 +30,6 @@ public class InnNormalizer {
                 .filter(this::isValidInn);
     }
 
-    // Бизнес-валидация (исходя из требований) => длина 10 (юр.лица) / длина 12 (физ.лица)
     private boolean isValidInn(String inn) {
         return inn.length() == INN_LEGAL_ENTITY_LENGTH || inn.length() == INN_INDIVIDUAL_LENGTH;
     }

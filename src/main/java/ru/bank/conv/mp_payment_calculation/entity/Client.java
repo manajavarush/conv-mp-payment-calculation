@@ -15,24 +15,23 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true) // БЕЗОПАСНО
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Builder
 public class Client {
 
-    @Id // id без авто-инкремента -> получаем из внешней системы
-    @EqualsAndHashCode.Include // Только ID определяет равенство
+    @Id
+    @EqualsAndHashCode.Include
     private Long id;
 
     @Column(name = "inn", length = 12)
     private String inn;
 
-    @Column(name = "name", nullable = false) // length = 255 по умолчанию, указание избыточно
+    @Column(name = "name", nullable = false)
     private String name;
 
-    // Настройка columnDefinition для PostgresSQL -> устанавливает значение по умолчанию FALSE при вставке новой записи
     @Column(name = "is_deleted", nullable = false, columnDefinition = "boolean default false")
-    @Builder.Default // устанавливает значение по умолчанию при использовании builder.build(), иначе был бы "null"
-    private boolean deleted = false; // мягкое удаление
+    @Builder.Default
+    private boolean deleted = false;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

@@ -25,24 +25,19 @@ class MockConvUisControllerTest {
 
     @InjectMocks
     private MockConvUisController controller;
-
-    // Не инициализируем здесь! Поле будет null до @BeforeEach
     private MockMvc mockMvc;
 
     @BeforeEach
     void setup() {
-        // Инициализируем MockMvc ПОСЛЕ того, как Mockito создал controller
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
 
     @Test
     @DisplayName("MockUIS: Должен вернуть 200 OK на каждые первые 4 запроса")
     void shouldReturnOkWhenServiceSuccess() throws Exception {
-        // Arrange
         when(mockService.next()).thenReturn(1L);
         when(mockService.isFailure(1L)).thenReturn(false);
 
-        // Act & Assert
         mockMvc.perform(post("/v1/conv-uis-gateway")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"integrationId\":1, \"source\":\"test\"}"))
@@ -53,11 +48,9 @@ class MockConvUisControllerTest {
     @Test
     @DisplayName("MockUIS: Должен вернуть 500 Error на каждый 5-й запрос")
     void shouldReturn500WhenServiceFailure() throws Exception {
-        // Arrange
         when(mockService.next()).thenReturn(5L);
         when(mockService.isFailure(5L)).thenReturn(true);
 
-        // Act & Assert
         mockMvc.perform(post("/v1/conv-uis-gateway")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"integrationId\":1, \"source\":\"test\"}"))

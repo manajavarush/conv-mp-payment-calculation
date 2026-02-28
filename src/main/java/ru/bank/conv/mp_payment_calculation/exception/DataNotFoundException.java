@@ -1,10 +1,7 @@
 package ru.bank.conv.mp_payment_calculation.exception;
 
-import ru.bank.conv.mp_payment_calculation.constant.Message;
+import ru.bank.conv.mp_payment_calculation.constant.ExceptionMessages;
 
-/**
- * Ошибка запроса(404) -> Not found data
- */
 public class DataNotFoundException extends RuntimeException {
-    public DataNotFoundException(){super(Message.DATA_NOT_FOUND.getText());}
+    public DataNotFoundException(){super(ExceptionMessages.DATA_NOT_FOUND.getText());}
 }

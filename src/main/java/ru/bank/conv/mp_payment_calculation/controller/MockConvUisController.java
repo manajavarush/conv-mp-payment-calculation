@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.bank.conv.mp_payment_calculation.constant.Message;
+import ru.bank.conv.mp_payment_calculation.constant.ExceptionMessages;
 import ru.bank.conv.mp_payment_calculation.dto.GatewayRequest;
 import ru.bank.conv.mp_payment_calculation.dto.GatewayResponse;
 import ru.bank.conv.mp_payment_calculation.service.MockConvUisService;
@@ -69,10 +69,10 @@ public class MockConvUisController {
             log.warn("UIS mock возвращает ошибку (500) — эмуляция недоступности UIS");
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new GatewayResponse(Message.UIS_NOT_AVAILABLE.getText()));
+                    .body(new GatewayResponse(ExceptionMessages.UIS_NOT_AVAILABLE.getText()));
         }
 
         log.info("UIS mock возвращает успешный ответ (200)");
-        return ResponseEntity.ok(new GatewayResponse(Message.OK.getText()));
+        return ResponseEntity.ok(new GatewayResponse(ExceptionMessages.OK.getText()));
     }
 }

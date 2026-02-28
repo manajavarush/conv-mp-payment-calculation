@@ -13,18 +13,18 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true) // БЕЗОПАСНО
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Builder
 public class Balance {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "balance_seq_gen")
     @SequenceGenerator(name = "balance_seq_gen", sequenceName = "balance_id_seq", allocationSize = 1)
-    @EqualsAndHashCode.Include // Только ID определяет равенство
+    @EqualsAndHashCode.Include
     private Long id;
 
     @Column(name = "dt", nullable = false)
-    private LocalDateTime balanceDateTime; // Дата и время получения данных
+    private LocalDateTime balanceDateTime;
 
     @Column(name = "morning_balance", precision = 18, scale = 2)
     private BigDecimal morningBalance;

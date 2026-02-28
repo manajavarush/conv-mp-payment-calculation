@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * Глобальная конфигурация Swagger / OpenAPI 3.0.
- * Красивое отображение заголовка, версии проекта, его описания
  */
 @OpenAPIDefinition(
         info = @Info(

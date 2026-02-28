@@ -29,7 +29,6 @@ import static ru.bank.conv.mp_payment_calculation.constant.SwaggerMessages.*;
 @RequiredArgsConstructor
 @Validated
 @Slf4j
-// группировка эндпоинтов по группам
 @Tag(name = "Payment Monitoring", description = "Мониторинг и обновление клиентских платежей")
 public class PaymentMonitoringController {
 
@@ -46,7 +45,7 @@ public class PaymentMonitoringController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = OK,
                     content = @Content(mediaType = APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = GatewayResponse.class),// Swagger покажет структуру тела ответа
+                            schema = @Schema(implementation = GatewayResponse.class),
                             examples = @ExampleObject(value = EXAMPLE_OK))),
             @ApiResponse(responseCode = "500", description = UIS_ERROR,
                     content = @Content(mediaType = APPLICATION_JSON_VALUE,
@@ -71,7 +70,7 @@ public class PaymentMonitoringController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = OK,
                     content = @Content(mediaType = APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = GatewayResponse.class),// Swagger покажет структуру тела ответа
+                            schema = @Schema(implementation = GatewayResponse.class),
                             examples = @ExampleObject(value = EXAMPLE_OK))),
             @ApiResponse(responseCode = "400", description = BAD_REQUEST + " или " + CLIENT_EXISTS,
                     content = @Content(mediaType = APPLICATION_JSON_VALUE,

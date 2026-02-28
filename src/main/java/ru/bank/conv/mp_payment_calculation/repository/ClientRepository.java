@@ -46,7 +46,6 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     @Query(FIND_BY_INN_AND_DELETED_FALSE)
     Optional<Client> findByInnAndDeletedFalse(@Param("inn") String inn);
 
-    // TZ-3
     @Query(FIND_ACTIVE_CLIENTS)
     List<Client> findActiveClients();
 }

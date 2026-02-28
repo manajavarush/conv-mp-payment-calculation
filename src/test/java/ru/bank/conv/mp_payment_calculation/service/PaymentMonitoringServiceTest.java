@@ -63,7 +63,9 @@ class PaymentMonitoringServiceTest {
         when(clientRepository.findActiveClientIds()).thenReturn(List.of(1L, 2L));
         when(properties.getIntegrationId()).thenReturn(2L);
         when(properties.getSource()).thenReturn("source");
-        when(gatewayClient.sendRequest(any())).thenReturn(new ResponseEntity<>(new GatewayResponse("OK"), HttpStatus.OK));
+        when(gatewayClient.sendRequest(any())).thenReturn(
+                new ResponseEntity<>(new GatewayResponse("OK"),
+                HttpStatus.OK));
 
         GatewayResponse response = service.syncActiveClientsPayments();
 
@@ -86,23 +88,20 @@ class PaymentMonitoringServiceTest {
     @Test
     @DisplayName("Register Clients: должен успешно зарегистрировать новых клиентов")
     void registerClientsForMonitoring_shouldRegisterSuccessfully() {
-        // Arrange
         List<Long> ids = List.of(1L);
 
-        // Мокаем, что активных клиентов с таким ID нет
         when(clientRepository.findActiveClientIdsByIdIn(ids)).thenReturn(List.of());
 
-        // Мокаем свойства и вызов шлюза
         when(properties.getIntegrationId()).thenReturn(2L);
         when(properties.getSource()).thenReturn("source");
-        when(gatewayClient.sendRequest(any())).thenReturn(new ResponseEntity<>(new GatewayResponse("OK"), HttpStatus.OK));
+        when(gatewayClient.sendRequest(any())).thenReturn(
+                new ResponseEntity<>(new GatewayResponse("OK"),
+                HttpStatus.OK));
 
-        // Act
         GatewayResponse response = service.registerClientsForMonitoring(ids);
 
-        // Assert
         assertThat(response.message()).isEqualTo("OK");
-        // Проверяем, что шлюз был вызван
+
         verify(gatewayClient).sendRequest(any());
     }
 
@@ -123,7 +122,6 @@ class PaymentMonitoringServiceTest {
     @Test
     @DisplayName("Get Payment Details: должен возвращать детали платежей")
     void getClientPaymentsDetails_shouldReturnDetails() {
-        // Arrange
         String inn = "123";
         LocalDateTime dt = LocalDateTime.now();
 
@@ -137,16 +135,12 @@ class PaymentMonitoringServiceTest {
         when(clientRepository.findByInnAndDeletedFalse(inn)).thenReturn(Optional.of(client));
         when(paymentRepository.findByClientIdAndPaymentDateTime(1L, dt)).thenReturn(List.of(payment));
 
-        // Мокаем маппер (если он используется в сервисе как зависимость)
-        // Если маппер вызывается внутри, его результат можно не проверять детально,
-        // главное что метод отработал без ошибок.
-        PaymentDto dto = new PaymentDto(BigDecimal.TEN, "In", "To", "From", "Ext", "Exec", "Desc");
+        PaymentDto dto = new PaymentDto(BigDecimal.TEN, "In", "To", "From",
+                "Ext", "Exec", "Desc");
         when(paymentMapper.mapToDtoList(List.of(payment))).thenReturn(List.of(dto));
 
-        // Act
         var response = service.getClientPaymentsDetails(inn, dt);
 
-        // Assert
         assertThat(response).isNotNull();
         assertThat(response.clientData().inn()).isEqualTo(inn);
     }
@@ -154,23 +148,17 @@ class PaymentMonitoringServiceTest {
     @Test
     @DisplayName("Delete Clients: должен успешно удалять клиентов и возвращать результат")
     void softDeleteClients_shouldDeleteSuccessfully() {
-        // Arrange
         List<String> rawInns = List.of("123");
 
-        // Мокаем нормализатор
         when(innNormalizer.normalize(rawInns)).thenReturn(rawInns);
 
-        // Мокаем поиск клиентов в БД
         Client client = new Client(1L, "123", "Test", false, null);
         when(clientRepository.findByInnIn(rawInns)).thenReturn(List.of(client));
 
-        // Мокаем операцию удаления (возвращает 1 - количество обновленных строк)
         when(clientRepository.softDeleteActiveByInnIn(rawInns)).thenReturn(1);
 
-        // Act
         ClientDeleteResponse response = service.softDeleteClients(rawInns);
 
-        // Assert
         assertThat(response.updatedCount()).isEqualTo(1);
         assertThat(response.notFoundInns()).isEmpty();
         assertThat(response.message()).isEqualTo("OK");
@@ -179,21 +167,17 @@ class PaymentMonitoringServiceTest {
     @Test
     @DisplayName("Delete Clients: должен возвращать список ненайденных ИНН")
     void softDeleteClients_shouldReturnNotFoundInns() {
-        // Arrange
         List<String> rawInns = List.of("123", "999");
 
         when(innNormalizer.normalize(rawInns)).thenReturn(rawInns);
 
-        // В базе нашли только одного
         Client client = new Client(1L, "123", "Test", false, null);
         when(clientRepository.findByInnIn(rawInns)).thenReturn(List.of(client));
 
         when(clientRepository.softDeleteActiveByInnIn(rawInns)).thenReturn(1);
 
-        // Act
         ClientDeleteResponse response = service.softDeleteClients(rawInns);
 
-        // Assert
         assertThat(response.updatedCount()).isEqualTo(1);
         assertThat(response.notFoundInns()).containsExactly("999");
     }
@@ -214,6 +198,7 @@ class PaymentMonitoringServiceTest {
     @DisplayName("Get Balances: должен выбросить DataNotFound, если нет балансов")
     void getActualClientBalances_shouldThrowDataNotFoundIfNoBalances() {
         Client client = new Client(1L, "123", "Test", false, null);
+
         when(clientRepository.findActiveClients()).thenReturn(List.of(client));
         when(balanceRepository.findLatestBalancesByClientIds(List.of(1L))).thenReturn(List.of());
 
@@ -223,7 +208,6 @@ class PaymentMonitoringServiceTest {
     @Test
     @DisplayName("Get Balances: должен корректно считать итоги и PlanBalance")
     void getActualClientBalances_shouldCalculateTotalsCorrectly() {
-        // Arrange
         LocalDateTime dt = LocalDateTime.now();
         Client client = new Client(1L, "123", "Test", false, null);
         Balance balance = Balance.builder().id(1L).client(client).balanceDateTime(dt)
@@ -238,14 +222,11 @@ class PaymentMonitoringServiceTest {
         );
         when(paymentAggregator.aggregate(any())).thenReturn(totals);
 
-        // Act
         ClientBalancesResponse response = service.getActualClientBalances();
 
-        // Assert
         assertThat(response.clientData()).hasSize(1);
         ClientBalanceDto dto = response.clientData().get(0);
 
-        // Проверяем расчет PlanBalance: 1000 - 10 - 0 = 990
         assertThat(dto.planBalance()).isEqualByComparingTo("990");
         assertThat(dto.externalPlannedLeave()).isEqualByComparingTo("10");
     }

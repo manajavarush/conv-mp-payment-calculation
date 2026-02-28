@@ -13,16 +13,10 @@ import java.util.concurrent.atomic.AtomicLong;
 public class MockConvUisService {
     private final AtomicLong counter = new AtomicLong(0);
 
-    /**
-     * Возвращает номер запроса.
-     */
     public long next() {
         return counter.incrementAndGet();
     }
 
-    /**
-     * Проверяет, является ли запрос неуспешным (каждый 5-й).
-     */
     public boolean isFailure(Long number) {
         return number % 5 == 0;
     }

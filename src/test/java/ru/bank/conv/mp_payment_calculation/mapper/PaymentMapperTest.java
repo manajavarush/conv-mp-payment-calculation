@@ -33,8 +33,6 @@ class PaymentMapperTest {
     @Test
     @DisplayName("Маппинг булевых полей: Status, Direction, OutBank")
     void mapBooleanFields() {
-        // Хотим: Status=Исполнен(true), OutBank=Внешний(true), Direction=Исходящий(false)
-        // Аргументы createPayment: (amount, isExecuted, isExternal, isIncoming, bankName)
         Payment p = createPayment(null, true, true, false, null);
 
         PaymentDto dto = mapper.mapToDtoList(List.of(p)).get(0);
@@ -56,12 +54,9 @@ class PaymentMapperTest {
         assertThat(dto.outBank()).isEqualTo("Нет данных");
     }
 
-    // ===================== Логика PaymentTo =====================
-
     @Test
     @DisplayName("PaymentTo: Внутренний -> Совкомбанк")
     void mapPaymentTo_Internal() {
-        // isExternal=false. isIncoming ставим false (не null), чтобы пройти проверку
         Payment p = createPayment(null, null, false, false, null);
 
         assertThat(mapper.mapToDtoList(List.of(p)).get(0).paymentTo()).isEqualTo("Совкомбанк");
@@ -91,12 +86,9 @@ class PaymentMapperTest {
         assertThat(mapper.mapToDtoList(List.of(p)).get(0).paymentTo()).isEqualTo("Нет данных");
     }
 
-    // ===================== Логика PaymentFrom =====================
-
     @Test
     @DisplayName("PaymentFrom: Внутренний -> Совкомбанк")
     void mapPaymentFrom_Internal() {
-        // isExternal=false. isIncoming ставим true (не null), чтобы пройти проверку
         Payment p = createPayment(null, null, false, true, null);
 
         assertThat(mapper.mapToDtoList(List.of(p)).get(0).paymentFrom()).isEqualTo("Совкомбанк");
@@ -126,8 +118,8 @@ class PaymentMapperTest {
         assertThat(mapper.mapToDtoList(List.of(p)).get(0).paymentFrom()).isEqualTo("Нет данных");
     }
 
-    // Helper
-    private Payment createPayment(BigDecimal amount, Boolean isExecuted, Boolean isExternal, Boolean isIncoming, String bankName) {
+    private Payment createPayment(BigDecimal amount, Boolean isExecuted, Boolean isExternal,
+                                  Boolean isIncoming, String bankName) {
         Payment p = new Payment();
         p.setAmount(amount);
         p.setIsExecuted(isExecuted);

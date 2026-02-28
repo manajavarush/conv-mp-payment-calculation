@@ -32,13 +32,6 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     List<Payment> findByClientIdAndPaymentDateTime(@Param("clientId") Long clientId,
                                                    @Param("dateTime") LocalDateTime dateTime);
 
-    // Получаем только те платежи, которые относятся к последнему пакету данных для каждого клиента
     @Query(FIND_PAYMENTS_FOR_LATEST_BALANCES)
     List<Payment> findPaymentsForLatestBalances(@Param("clientIds") List<Long> clientIds);
-
-    // А вот так никто не делает - достать все платежи для списка клиентов, а в коде отфильтровать по дате
-
-    //    String FIND_BY_CLIENT_ID_IN = "SELECT p FROM Payment p WHERE p.client.id IN :ids";
-    //    @Query(FIND_BY_CLIENT_ID_IN)
-    //    List<Payment> findByClientIdIn(@Param("ids") List<Long> clientIds);
 }

@@ -22,12 +22,11 @@ class MockConvUisServiceTest {
     @Test
     @DisplayName("Каждый 5-й запрос должен возвращать ошибку")
     void fifthRequestShouldFail() {
-        // Прокручиваем счетчик до 5
+
         for (int i = 0; i < 4; i++) {
             service.next();
         }
 
-        // 5-й вызов
         long num = service.next();
         assertThat(num).isEqualTo(5);
         assertThat(service.isFailure(num)).isTrue();
@@ -36,7 +35,7 @@ class MockConvUisServiceTest {
     @Test
     @DisplayName("10-й запрос тоже должен падать")
     void tenthRequestShouldFail() {
-        // Прокручиваем счетчик до 10
+
         for (int i = 0; i < 9; i++) {
             service.next();
         }

@@ -10,15 +10,8 @@ import ru.bank.conv.mp_payment_calculation.exception.*;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
-    // Вынести в enum (все сообщения строго по ТЗ) или оставить здесь ?
     private static final String INVALID_PARAM_FORMAT_MSG = "Invalid parameter format";
 
-    /*
-        По хорошему разнести ошибки валидации / бизнес-логики / внешнего UIS / БД
-     */
-
-    // Обработка ошибок доступности (UIS, DB)
     @ExceptionHandler({
             UisUnavailableException.class,
             DbUnavailableException.class
@@ -29,8 +22,6 @@ public class GlobalExceptionHandler {
                 .body(new GatewayResponse(exception.getMessage()));
     }
 
-
-    // Ошибка "Не найдено" (404)
     @ExceptionHandler({
             PaymentsNotFoundException.class,
             DataNotFoundException.class

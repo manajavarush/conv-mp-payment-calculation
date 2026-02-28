@@ -1,12 +1,9 @@
 package ru.bank.conv.mp_payment_calculation.exception;
 
-import ru.bank.conv.mp_payment_calculation.constant.Message;
+import ru.bank.conv.mp_payment_calculation.constant.ExceptionMessages;
 
-/**
- * Ошибка запроса (400) -> Bad Request
- */
 public class BadRequestException extends RuntimeException {
     public BadRequestException() {
-        super(Message.BAD_REQUEST.getText());
+        super(ExceptionMessages.BAD_REQUEST.getText());
     }
 }
