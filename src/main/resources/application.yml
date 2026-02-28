@@ -41,7 +41,7 @@ springdoc:
     tags-sorter: alpha               # Сортирует контроллеры по алфавиту
     display-request-duration: true   # Показывает время выполнения запроса
     filter: true                     # Поиск по API
-    default-models-expand-depth: 2   # Раскрывать модели DTO (2 — разумно)
+    default-models-expand-depth: 2   # Раскрывать модели DTO
   api-docs:
     path: /api-docs                  # стандартный endpoint JSON (OpenAPI spec)
 

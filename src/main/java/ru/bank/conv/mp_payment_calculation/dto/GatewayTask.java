@@ -7,6 +7,7 @@ import java.util.List;
 
 @Schema(description = "Задание для обработки клиентских ID")
 public record GatewayTask(@JsonProperty("clientId")
-                          @Schema(description = "ID клиентов для обработки", example = "[1, 2, 3]")
+                          @Schema(description = "ID клиентов для обработки",
+                                  example = "[1, 2, 3]")
                           List<Long> clientIds) {
 }

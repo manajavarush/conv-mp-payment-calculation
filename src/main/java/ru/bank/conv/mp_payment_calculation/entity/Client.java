@@ -32,7 +32,7 @@ public class Client {
     // Настройка columnDefinition для PostgresSQL -> устанавливает значение по умолчанию FALSE при вставке новой записи
     @Column(name = "is_deleted", nullable = false, columnDefinition = "boolean default false")
     @Builder.Default // устанавливает значение по умолчанию при использовании builder.build(), иначе был бы "null"
-    private boolean isDeleted = false; // мягкое удаление
+    private boolean deleted = false; // мягкое удаление
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

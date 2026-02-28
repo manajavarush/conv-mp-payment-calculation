@@ -24,7 +24,7 @@ public class Payment {
     private Long id;
 
     @Column(name = "dt", nullable = false)
-    private LocalDateTime paymentDateTime;  // Дата и время получения данных о платежах
+    private LocalDateTime dateTime;  // Дата и время получения данных о платежах
 
     @Column(name = "amount", precision = 18, scale = 2)
     private BigDecimal amount;
